@@ -1,0 +1,212 @@
+# Пошаговая инструкция по настройке на Railway
+
+## Шаг 1: Регистрация и создание проекта
+
+1. Перейдите на [railway.app](https://railway.app)
+2. Нажмите **"Start a New Project"** или **"Login"** если уже есть аккаунт
+3. Войдите через GitHub (рекомендуется) или email
+4. После входа нажмите **"New Project"**
+5. Выберите **"Deploy from GitHub repo"**
+
+## Шаг 2: Подключение репозитория
+
+1. Выберите ваш репозиторий `accountant-bot`
+2. Railway автоматически определит Dockerfile
+3. Если репозиторий в подпапке, укажите **Root Directory**: `accountant-bot`
+4. Нажмите **"Deploy Now"**
+
+## Шаг 3: Настройка переменных окружения
+
+1. В проекте Railway откройте вкладку **"Variables"**
+2. Добавьте следующие переменные:
+
+### Обязательные переменные:
+
+```
+BOT_TOKEN=ваш_telegram_bot_token_здесь
+BOT_USERNAME=accountant_bot
+PORT=10000
+DATA_DIR=/data
+KEEP_ALIVE_MODE=always
+```
+
+### Опциональные (для Google Sheets):
+
+Если используете Google Sheets, добавьте:
+
+**Вариант 1: JSON в переменной (рекомендуется)**
+```
+GOOGLE_CREDENTIALS={"type":"service_account","project_id":"...","private_key_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","client_email":"...@....iam.gserviceaccount.com","client_id":"...","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url":"..."}
+GOOGLE_SPREADSHEET_ID=ваш_spreadsheet_id_здесь
+GOOGLE_SHEET_NAME=Sheet1
+```
+
+**Вариант 2: Путь к файлу (если загрузите credentials.json)**
+```
+GOOGLE_CREDENTIALS_PATH=/data/credentials.json
+GOOGLE_SPREADSHEET_ID=ваш_spreadsheet_id_здесь
+GOOGLE_SHEET_NAME=Sheet1
+```
+
+**Как получить BOT_TOKEN:**
+1. Откройте Telegram
+2. Найдите [@BotFather](https://t.me/BotFather)
+3. Отправьте `/newbot` или `/mybots` если бот уже создан
+4. Скопируйте токен
+
+**Как получить GOOGLE_CREDENTIALS:**
+1. Перейдите в [Google Cloud Console](https://console.cloud.google.com)
+2. Создайте проект (если нет)
+3. Включите Google Sheets API
+4. Создайте Service Account
+5. Скачайте JSON ключ
+6. Скопируйте весь JSON в переменную `GOOGLE_CREDENTIALS` (в одну строку!)
+
+## Шаг 4: Настройка Persistent Volume (ВАЖНО!)
+
+Без этого ваши CSV файлы будут теряться при перезапуске!
+
+1. В проекте Railway откройте вкладку **"Data"**
+2. Нажмите **"New"** → **"Volume"**
+3. Настройте:
+   - **Name**: `accountant-bot-data`
+   - **Mount Path**: `/data`
+   - **Size**: 1 GB (достаточно для CSV файлов)
+4. Нажмите **"Add"**
+
+## Шаг 5: Настройка Health Check
+
+1. В настройках сервиса откройте **"Settings"**
+2. Найдите раздел **"Healthcheck"**
+3. Установите:
+   - **Healthcheck Path**: `/health`
+   - Railway будет автоматически проверять этот endpoint
+
+## Шаг 6: Настройка домена (опционально)
+
+1. В настройках сервиса откройте **"Settings"**
+2. Найдите раздел **"Networking"**
+3. Нажмите **"Generate Domain"** для получения бесплатного домена
+4. Или добавьте свой домен
+
+## Шаг 7: Проверка деплоя
+
+1. Откройте вкладку **"Deployments"** чтобы увидеть процесс деплоя
+2. Откройте вкладку **"Logs"** чтобы увидеть логи
+3. Дождитесь завершения деплоя (обычно 2-5 минут)
+
+**Что должно быть в логах:**
+```
+✓ Health check server started on port 10000
+📁 Базовая директория данных: /data
+CSV хранилище инициализировано: /data/expenses.csv
+Accountant Bot started
+```
+
+## Шаг 8: Тестирование бота
+
+1. Откройте Telegram
+2. Найдите вашего бота по username
+3. Отправьте команду `/start`
+4. Проверьте, что бот отвечает
+
+## Шаг 9: Настройка автоматического деплоя
+
+По умолчанию Railway автоматически деплоит при push в ветку `main` или `master`.
+
+Чтобы изменить:
+1. В настройках сервиса откройте **"Settings"**
+2. Найдите раздел **"Source"**
+3. Выберите нужную ветку
+
+## Шаг 10: Мониторинг и логи
+
+1. **Логи**: Вкладка **"Logs"** в реальном времени
+2. **Метрики**: Вкладка **"Metrics"** для CPU, RAM, Network
+3. **Deployments**: История всех деплоев
+
+## Возможные проблемы и решения
+
+### Проблема: Бот не запускается
+
+**Решение:**
+1. Проверьте логи в Railway
+2. Убедитесь, что все переменные окружения установлены
+3. Проверьте, что `BOT_TOKEN` правильный
+4. Убедитесь, что Volume создан и смонтирован
+
+### Проблема: CSV файлы теряются
+
+**Решение:**
+1. Убедитесь, что Volume создан (Шаг 4)
+2. Проверьте, что `DATA_DIR=/data` (путь к Volume)
+3. Volume должен быть смонтирован в `/data`
+
+### Проблема: Google Sheets не работает
+
+**Решение:**
+1. Проверьте, что `GOOGLE_CREDENTIALS` содержит полный JSON (в одну строку!)
+2. Убедитесь, что Service Account имеет доступ к таблице
+3. Проверьте, что `GOOGLE_SPREADSHEET_ID` правильный
+4. Посмотрите логи на ошибки
+
+### Проблема: Health check не работает
+
+**Решение:**
+1. Убедитесь, что `PORT=10000` установлен
+2. Проверьте логи - должен быть "Health check server started"
+3. Health check path должен быть `/health`
+
+### Проблема: Высокое использование ресурсов
+
+**Решение:**
+1. Проверьте метрики в Railway
+2. Увеличьте план, если нужно
+3. Оптимизируйте код (если нужно)
+
+## Планы и цены Railway
+
+- **Hobby Plan** ($5/мес) - рекомендуется для начала
+  - 512 MB RAM
+  - $5 кредита в месяц
+  - Подходит для бота
+
+- **Developer Plan** ($20/мес)
+  - Больше ресурсов
+  - Приоритетная поддержка
+
+- **Team Plan** - для команд
+
+**Примечание**: Railway дает $5 бесплатного кредита каждый месяц на Hobby плане, что может покрыть стоимость простого бота.
+
+## Обновление бота
+
+Railway автоматически деплоит при push в подключенную ветку.
+
+Для ручного деплоя:
+1. Откройте вкладку **"Deployments"**
+2. Нажмите **"Redeploy"** на нужном деплое
+
+## Полезные ссылки
+
+- [Railway Dashboard](https://railway.app/dashboard)
+- [Railway Documentation](https://docs.railway.app)
+- [Railway Discord](https://discord.gg/railway) - поддержка сообщества
+
+## Чек-лист перед запуском
+
+- [ ] Регистрация на Railway
+- [ ] Подключен GitHub репозиторий
+- [ ] Установлен `BOT_TOKEN`
+- [ ] Установлен `BOT_USERNAME`
+- [ ] Установлен `DATA_DIR=/data`
+- [ ] Установлен `KEEP_ALIVE_MODE=always`
+- [ ] Создан Volume для `/data`
+- [ ] Health check настроен на `/health`
+- [ ] Бот отвечает в Telegram
+- [ ] CSV файлы сохраняются (проверьте после перезапуска)
+
+## Готово! 🎉
+
+Ваш бот должен работать на Railway. Если возникнут проблемы, проверьте логи и этот чек-лист.
+
