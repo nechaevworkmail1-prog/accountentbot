@@ -20,33 +20,40 @@
 1. В проекте Railway откройте вкладку **"Variables"**
 2. Добавьте следующие переменные:
 
-### Обязательные переменные:
+### Обязательные переменные (минимум):
 
 ```
 BOT_TOKEN=ваш_telegram_bot_token_здесь
-BOT_USERNAME=accountant_bot
-PORT=10000
 DATA_DIR=/data
-KEEP_ALIVE_MODE=always
+```
+
+### Рекомендуемые переменные (для production):
+
+```
+BOT_USERNAME=accountant_bot        # Опциональна (дефолт: accountant_bot)
+KEEP_ALIVE_MODE=always              # Опциональна (дефолт: always)
+PORT=10000                          # Опциональна (Railway установит автоматически)
 ```
 
 ### Опциональные (для Google Sheets):
 
 Если используете Google Sheets, добавьте:
 
-**Вариант 1: JSON в переменной (рекомендуется)**
+**Для Google Sheets (если используете):**
 ```
 GOOGLE_CREDENTIALS={"type":"service_account","project_id":"...","private_key_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","client_email":"...@....iam.gserviceaccount.com","client_id":"...","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url":"..."}
-GOOGLE_SPREADSHEET_ID=ваш_spreadsheet_id_здесь
-GOOGLE_SHEET_NAME=Sheet1
+GOOGLE_SHEET_NAME=Sheet1  # Опциональна (дефолт: Sheet1)
 ```
 
-**Вариант 2: Путь к файлу (если загрузите credentials.json)**
-```
-GOOGLE_CREDENTIALS_PATH=/data/credentials.json
-GOOGLE_SPREADSHEET_ID=ваш_spreadsheet_id_здесь
-GOOGLE_SHEET_NAME=Sheet1
-```
+**⚠️ ВАЖНО:**
+- Эта переменная **НЕ обязательна**
+- Бот поддерживает **несколько таблиц** - каждый пользователь может указать свою
+- Пользователи устанавливают свою таблицу через команду `/setid` в боте
+- `GOOGLE_SPREADSHEET_ID` используется только как дефолтная таблица (fallback)
+- Если хотите установить дефолтную таблицу, добавьте:
+  ```
+  GOOGLE_SPREADSHEET_ID=ваш_spreadsheet_id_здесь
+  ```
 
 **Как получить BOT_TOKEN:**
 1. Откройте Telegram
@@ -146,9 +153,11 @@ Accountant Bot started
 
 **Решение:**
 1. Проверьте, что `GOOGLE_CREDENTIALS` содержит полный JSON (в одну строку!)
-2. Убедитесь, что Service Account имеет доступ к таблице
-3. Проверьте, что `GOOGLE_SPREADSHEET_ID` правильный
-4. Посмотрите логи на ошибки
+2. Убедитесь, что Service Account имеет доступ к таблице пользователя
+3. Пользователь должен указать свою таблицу через команду `/setid` в боте
+4. `GOOGLE_SPREADSHEET_ID` не обязателен - используется только как fallback
+5. Посмотрите логи на ошибки
+6. Проверьте, что пользователь дал доступ Service Account к своей таблице (роль Editor)
 
 ### Проблема: Health check не работает
 
