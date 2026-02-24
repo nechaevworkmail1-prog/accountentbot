@@ -42,7 +42,7 @@
     GOOGLE_SHEETS_CREDENTIALS=... (если есть)
     ```
 
-3.  **Запусти через Docker Compose (если есть compose-файл) или собери образ:**
+3.  **Запусти через Docker Compose  или собери образ:**
     `docker build -t accountentbot .`
     `docker run --env-file .env accountentbot`
 
@@ -62,5 +62,7 @@ Dockerfile         # Инструкция для сборки образа
 pom.xml            # Зависимости Maven
 railway.json       # Конфиг для Railway
 
+
 📞 Контакты
-Твои контакты (HH: https://ekaterinburg.hh.ru/resume/9a143089ff0f6d6aea0039ed1f777663713056, Telegram @TWIN_TURB0)
+Твои контакты (HH: https://ekaterinburg.hh.ru/resume/9a143089ff0f6d6aea0039ed1f777663713056,
+Telegram @TWIN_TURB0)
