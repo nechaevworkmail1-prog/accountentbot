@@ -3,7 +3,7 @@
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED)
 ![Maven](https://img.shields.io/badge/Maven-3.8-red)
 [![Railway](https://img.shields.io/badge/Deployed%20on-Railway-purple)](https://railway.app)
-![Static Badge](https://img.shields.io/badge/by%20tg-TWIN_TURB0-blue?style=for-the-badge&logo=telegram)
+![Static Badge](https://img.shields.io/badge/%20tg-TWIN(_)TURB0-blue?style=for-the-badge&logo=telegram)
 # 🤖 AccountantBot / Telegram Bot для финансового учета
 
 
