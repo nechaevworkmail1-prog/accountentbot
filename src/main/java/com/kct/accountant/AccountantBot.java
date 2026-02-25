@@ -123,7 +123,7 @@ public class AccountantBot extends TelegramLongPollingBot {
         System.out.println("   GOOGLE_CREDENTIALS_PATH: " + (creds != null ? creds : "не установлена"));
         System.out.println("   GOOGLE_CREDENTIALS: " + (credsJson != null ? "установлена (JSON)" : "не установлена"));
         
-        // Сначала проверяем переменную GOOGLE_CREDENTIALS (JSON напрямую)
+        // Сначала проверяем переменную GOOGLE_CREDENTIALS 
         if (credsJson != null && !credsJson.isBlank()) {
             try {
                 // Создаем временный файл из JSON
@@ -137,7 +137,7 @@ public class AccountantBot extends TelegramLongPollingBot {
                 creds = null;
             }
         } else if (creds == null || creds.isBlank()) {
-            // Если GOOGLE_CREDENTIALS не установлена, ищем файлы
+            // Если GOOGLE_CREDENTIALS не установлена ищем файлы
             Path secretsPath = Paths.get("/etc/secrets/credentials.json");
             Path localPath = Paths.get("credentials.json");
             System.out.println("   Проверка /etc/secrets/credentials.json: " + (Files.exists(secretsPath) ? "найден" : "не найден"));
@@ -230,7 +230,7 @@ public class AccountantBot extends TelegramLongPollingBot {
     }
 
     private void startKeepAlive() {
-        // Проверяем, нужно ли ограничение по времени (для Railway/Render лучше без ограничений)
+        // Проверяем нужно ли ограничение по времени (для Railway/Render лучше без ограничений)
         String keepAliveMode = System.getenv("KEEP_ALIVE_MODE");
         boolean alwaysOn = "always".equalsIgnoreCase(keepAliveMode) || keepAliveMode == null;
         
@@ -272,7 +272,7 @@ public class AccountantBot extends TelegramLongPollingBot {
     }
     
     private void loadUserSpreadsheetIds() {
-        // Сначала пытаемся загрузить из Google Sheets (если настроен)
+        // Сначала пытаемся загрузить из Google Sheets 
         if (sheetsService != null) {
             try {
                 loadUserSpreadsheetIdsFromSheets();
@@ -340,13 +340,13 @@ public class AccountantBot extends TelegramLongPollingBot {
                 }
             }
         } catch (Exception e) {
-            // Если лист "Users" не существует, это нормально - создадим его при первом сохранении
+            // Если лист "Users" не существует - создадим его при первом сохранении
             String errorMsg = e.getMessage();
             if (errorMsg != null && (errorMsg.contains("Unable to parse range") || 
                                      errorMsg.contains("не найден") ||
                                      errorMsg.contains("400"))) {
                 System.out.println("ℹ️ Лист 'Users' не найден, будет создан при первом сохранении");
-                // Возвращаем пустой список - это нормально
+                // Возвращаем пустой список
                 return;
             }
             throw e;
@@ -414,7 +414,7 @@ public class AccountantBot extends TelegramLongPollingBot {
     private void saveUserSpreadsheetId(long chatId, String spreadsheetId) {
         userSpreadsheetIds.put(chatId, spreadsheetId);
         
-        // Сохраняем в Google Sheets (если настроен)
+        // Сохраняем в Google Sheets
         if (sheetsService != null) {
             try {
                 saveUserSpreadsheetIdsToSheets();
