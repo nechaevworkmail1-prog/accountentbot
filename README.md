@@ -64,5 +64,5 @@ railway.json       # Конфиг для Railway
 
 
 📞 Контакты
-Твои контакты (HH: https://ekaterinburg.hh.ru/resume/9a143089ff0f6d6aea0039ed1f777663713056,
+(HH: https://ekaterinburg.hh.ru/resume/9a143089ff0f6d6aea0039ed1f777663713056,
 Telegram @TWIN_TURB0)
